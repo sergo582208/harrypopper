@@ -1,46 +1,54 @@
 package ru.hogwarts.school1.service.impl;
 
+import jakarta.persistence.Id;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school1.model.Faculty;
 import ru.hogwarts.school1.model.Student;
+import ru.hogwarts.school1.repository.FacultyRepository;
 import ru.hogwarts.school1.service.FacultyService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
-    private final Map<Long,Faculty> faculties = new HashMap<>();
-    private static long counter = 0;
+    private final FacultyRepository facultyRepository;
+
+    public FacultyServiceImpl(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
+
     @Override
     public Faculty add(Faculty faculty) {
-        faculty.setId(++counter);
-        return faculties.put(faculty.getId(), faculty);
+        return facultyRepository.save(faculty);
     }
 
     @Override
     public Faculty get(Long id) {
-        return faculties.get(id);
+        return facultyRepository.findById(id).orElse(null);
     }
 
     @Override
     public Faculty update(Long id, Faculty faculty) {
-        return faculties.put(faculty.getId(), faculty);
+        Faculty facultyFromDb = get(id);
+        if (facultyFromDb == null) {
+            return null;
+        }
+        facultyFromDb.setName(faculty.getName());
+        facultyFromDb.setColor(faculty.getColor());
+        return facultyRepository.save(facultyFromDb);
     }
 
     @Override
     public void remove(Long id) {
-        faculties.remove(id);
+        facultyRepository.deleteById(id);
     }
 
     @Override
     public List<Faculty> getFacultiesByColor(String color) {
-            return faculties.values()
-                    .stream()
-                    .filter(it -> it.getColor() == color)
-                    .collect(Collectors.toList());
+        return facultyRepository.findAllByColor(color);
     }
 }
+
+
 
