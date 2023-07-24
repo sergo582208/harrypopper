@@ -11,4 +11,7 @@ public interface FacultyService {
     Faculty update(Long id,Faculty faculty);
     void remove(Long id);
     List<Faculty> getFacultiesByColor(String colour);
+
+    List<Faculty> findByColorOrName(String color, String name);
+    List<Student> getStudents(Long id);
 }
