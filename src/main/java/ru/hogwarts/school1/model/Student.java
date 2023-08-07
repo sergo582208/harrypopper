@@ -79,4 +79,8 @@ private Faculty faculty;
                 ", age=" + age +
                 '}';
     }
+
+    public Object add(Student student) {
+        return null;
+    }
 }
