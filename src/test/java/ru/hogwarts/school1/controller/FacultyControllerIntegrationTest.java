@@ -62,7 +62,7 @@ public void resetDb(){facultyRepository.deleteAll();}
     }
 
 
-    private BooleanSupplier persistTestFaculty(String Griffindor, String Color, Long facultyId) {
+    private Long persistTestFaculty(String Griffindor, String Color, Long facultyId) {
         Faculty faculty = new Faculty();
         faculty.setName("Griffindor");
         faculty.setColor("Color");

@@ -105,9 +105,7 @@ void shouldDeleteStudents() throws Exception {
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(print());
 }
-    private Object get(String path) {
-        return null;
-    }
+
 
     @Test
     void shouldReturnFaculty(Student student) throws Exception {

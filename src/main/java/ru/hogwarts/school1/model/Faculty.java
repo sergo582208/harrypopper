@@ -8,7 +8,6 @@ import jakarta.persistence.OneToMany;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BooleanSupplier;
 
 @Entity
 public class Faculty {
@@ -33,7 +32,7 @@ private List<Student> students;
     }
 
 
-    public BooleanSupplier getId(Long facultyId) {
+    public Long getId(Long facultyId) {
         return id;
     }
 
