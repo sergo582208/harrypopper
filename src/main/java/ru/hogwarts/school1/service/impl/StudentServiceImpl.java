@@ -68,4 +68,19 @@ public class StudentServiceImpl implements StudentService {
                 .map(it -> it.getFaculty())
                 .orElse(null) ;
     }
+
+    @Override
+    public int getNumberOfStudents() {
+        return studentRepository.getNumberOfStudents();
+    }
+
+    @Override
+    public int getAverageAgeStudents() {
+        return studentRepository.getAverageAgeStudents();
+    }
+
+    @Override
+    public List<Student> getLastFiveStudents() {
+        return studentRepository.getLastFiveStudents();
+    }
 }

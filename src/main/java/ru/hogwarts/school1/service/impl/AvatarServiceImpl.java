@@ -1,19 +1,28 @@
 package ru.hogwarts.school1.service.impl;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school1.dto.AvatarDTO;
+import ru.hogwarts.school1.mapper.AvatarMapper;
 import ru.hogwarts.school1.model.Avatar;
 import ru.hogwarts.school1.model.Student;
 import ru.hogwarts.school1.repository.AvatarRepository;
 import ru.hogwarts.school1.repository.StudentRepository;
 import ru.hogwarts.school1.service.AvatarService;
 
+import java.awt.print.Pageable;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Nodes;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
+import static java.util.stream.Nodes.collect;
 
 @Service
 public class AvatarServiceImpl implements AvatarService {
@@ -21,13 +30,17 @@ public class AvatarServiceImpl implements AvatarService {
 
     private final AvatarRepository avatarRepository;
 
+    private final AvatarMapper avatarMapper;
+
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
 
-    public AvatarServiceImpl(StudentRepository studentRepository, AvatarRepository avatarRepository) {
+    public AvatarServiceImpl(StudentRepository studentRepository, AvatarRepository avatarRepository, AvatarMapper avatarMapper, String avatarsDir) {
         this.studentRepository = studentRepository;
         this.avatarRepository = avatarRepository;
 
+        this.avatarMapper = avatarMapper;
+        this.avatarsDir = avatarsDir;
     }
 
     @Override
@@ -71,6 +84,17 @@ private Path saveToDisk(Student student, MultipartFile avatarFile) throws IOExce
 public Avatar findAvatar(Long studentId){
         return avatarRepository.findByStudent_id(studentId).orElse(new Avatar());
 }
+
+    @Override
+    public List<AvatarDTO> getPaginatedAvatars(int pageNumber, int pageSize) {
+        Pageable pageable = (Pageable) PageRequest.of(pageNumber - 1, pageSize);
+        return (List<AvatarDTO>) avatarRepository.findAll((org.springframework.data.domain.Pageable) pageable)
+                .getContent()
+                .stream()
+                .map(avatarMapper::mapToDTO);
+                .collect(Collectors.toList());
+    }
+
 
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
