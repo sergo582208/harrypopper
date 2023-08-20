@@ -1,5 +1,6 @@
 package ru.hogwarts.school1.service.impl;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Nodes;
@@ -35,6 +37,7 @@ public class AvatarServiceImpl implements AvatarService {
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
 
+    private final Logger logger = (Logger) LoggerFactory.getLogger(AvatarServiceImpl.class);
     public AvatarServiceImpl(StudentRepository studentRepository, AvatarRepository avatarRepository, AvatarMapper avatarMapper, String avatarsDir) {
         this.studentRepository = studentRepository;
         this.avatarRepository = avatarRepository;
@@ -45,6 +48,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
+        logger.info("Method uploadAvatar was invoked!");
         Student student = studentRepository.findById(studentId).orElseThrow();
 
 
@@ -54,7 +58,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     }
     private void saveToDb(Student student, MultipartFile avatarFile, Path filePath) throws IOException {
-
+        logger.info("Method saveToDb was invoked!");
         Avatar avatar = findAvatar(student.getId());
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
@@ -65,6 +69,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     }
 private Path saveToDisk(Student student, MultipartFile avatarFile) throws IOException {
+    logger.info("Method saveToDisk was invoked!");
 
     Path filePath = Path.of(avatarsDir,
             student.getId() + "." + getExtensions(avatarFile.getOriginalFilename()));
@@ -82,11 +87,13 @@ private Path saveToDisk(Student student, MultipartFile avatarFile) throws IOExce
 }
 
 public Avatar findAvatar(Long studentId){
+    logger.info("Method findAvatar was invoked!");
         return avatarRepository.findByStudent_id(studentId).orElse(new Avatar());
 }
 
     @Override
     public List<AvatarDTO> getPaginatedAvatars(int pageNumber, int pageSize) {
+        logger.info("Method getPaginatedAvatars was invoked!");
         Pageable pageable = (Pageable) PageRequest.of(pageNumber - 1, pageSize);
         return (List<AvatarDTO>) avatarRepository.findAll((org.springframework.data.domain.Pageable) pageable)
                 .getContent()
@@ -97,6 +104,7 @@ public Avatar findAvatar(Long studentId){
 
 
     private String getExtensions(String fileName) {
+        logger.info("Method getExtensions was invoked!");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
     }
