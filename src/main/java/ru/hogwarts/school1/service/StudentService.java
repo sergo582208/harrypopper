@@ -27,4 +27,7 @@ public interface StudentService {
     Object getStudentNamesStartedWithA();
 
     Double getAverageAge();
+
+    void threads();
+    void threadsSync();
 }
