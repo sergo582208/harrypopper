@@ -5,7 +5,6 @@ import ru.hogwarts.school1.model.Faculty;
 import ru.hogwarts.school1.model.Student;
 import ru.hogwarts.school1.repository.FacultyRepository;
 import ru.hogwarts.school1.service.FacultyService;
-import ru.hogwarts.school1.service.StudentService;
 
 import java.util.List;
 
@@ -56,6 +55,12 @@ public class FacultyController {
     public List<Student> getStudents(@PathVariable long id) {
         return facultyService.getStudents(id);
     }
+
+    @GetMapping("the-longest-name")
+    public String getTheLongestName() {
+        return facultyService.getTheLongestName();
+    }
+
 }
 
 

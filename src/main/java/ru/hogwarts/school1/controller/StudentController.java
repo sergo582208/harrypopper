@@ -62,14 +62,17 @@ public class StudentController {
         return studentService.getStudentByAge(age);
 
     }
+
     @GetMapping("/by-age-between")
-    public List<Student> getByAgeBetween(@RequestParam int min, @RequestParam int max){
-return studentRepository.findByAgeBetween(min, max);
+    public List<Student> getByAgeBetween(@RequestParam int min, @RequestParam int max) {
+        return studentRepository.findByAgeBetween(min, max);
     }
+
     @GetMapping("/{id}/faculty")
-    public Faculty getFacultyByStudent(@PathVariable long id){
-return studentService.getFacultyByStudent(id);
+    public Faculty getFacultyByStudent(@PathVariable long id) {
+        return studentService.getFacultyByStudent(id);
     }
+
     @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar
             (@PathVariable Long studentId,
@@ -78,6 +81,7 @@ return studentService.getFacultyByStudent(id);
         avatarService.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/{studentId}/avatar-from-db")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long studentId) {
         Avatar avatar = avatarService.findAvatar(studentId);
@@ -86,15 +90,16 @@ return studentService.getFacultyByStudent(id);
         headers.setContentLength(avatar.getData().length);
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
+
     @GetMapping(value = "/{studentId}/avatar-from-file")
     public Object downloadAvatar(@PathVariable Long studentId,
-                                 HttpServletResponse response) throws IOException{
+                                 HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(studentId);
 
         Path path = Path.of(avatar.getFilePath());
 
-        try(InputStream is = Files.newInputStream(path);
-            OutputStream os = response.getOutputStream();) {
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream();) {
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());
             response.setContentLength((int) avatar.getFileSize());
@@ -102,20 +107,28 @@ return studentService.getFacultyByStudent(id);
         }
 
         @GetMapping(value = "/total-number")
-        public int getNumberOfStudents{
-return studentService.getNumberOfStudents();
+        public int getNumberOfStudents {
+            return studentService.getNumberOfStudents();
         }
 
         @GetMapping(value = "/average-age")
         public int getAverageAgeStudents {
-return studentService.getAverageAgeStudents();
+            return studentService.getAverageAgeStudents();
         }
         @GetMapping(value = "/last-five")
-        public List<Student> getLastFiveStudents(){
+        public List<Student> getLastFiveStudents {
             return studentService.getLastFiveStudents();
-
         }
+        @GetMapping(value = "students-name-started-with-a")
+        public List<String> getStudentNamesStartedWithA {
+            return studentService.getStudentNamesStartedWithA();
+        }
+        @GetMapping(value = "streams-average-age")
+        public Double getAverageAge{
+            return studentService.getAverageAge();
+
     }
-    }
+
+}
 
 
